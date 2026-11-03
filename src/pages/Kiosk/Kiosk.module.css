@@ -468,6 +468,163 @@
   --light-accent: #a7f3d0;
 }
 
+.trackingSection {
+  --section-color: #2563eb; /* Royal / Electric Blue */
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  --border-color: #94a3b8;
+  --shadow-color: rgba(37, 99, 235, 0.15);
+  --dark-accent: #0f172a;
+  --light-accent: #e2e8f0;
+}
+
+/* Card-level Department Theme Overrides for Tracking items */
+.itemMech {
+  --section-color: #3b82f6;
+  --bg-gradient: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #eff6ff 100%);
+  --border-color: #60a5fa;
+  --shadow-color: rgba(59, 130, 246, 0.2);
+  --dark-accent: #1e3a8a;
+  --light-accent: #bfdbfe;
+}
+
+.itemBody {
+  --section-color: #f59e0b;
+  --bg-gradient: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fffbeb 100%);
+  --border-color: #fbbf24;
+  --shadow-color: rgba(245, 158, 11, 0.2);
+  --dark-accent: #78350f;
+  --light-accent: #fde68a;
+}
+
+.itemWash {
+  --section-color: #0ea5e9;
+  --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+  --border-color: #38bdf8;
+  --shadow-color: rgba(14, 165, 233, 0.2);
+  --dark-accent: #0c4a6e;
+  --light-accent: #bae6fd;
+}
+
+/* Header & Breakdown Badges */
+.sectionTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.stagePillsGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.stagePillBadge {
+  font-size: clamp(0.68rem, 0.8vw, 0.82rem);
+  font-weight: 800;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.stagePillMech {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+
+.stagePillBody {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+.stagePillWash {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #7dd3fc;
+}
+
+.livePulseIcon {
+  color: #2563eb;
+  animation: liveBeacon 1.5s ease-in-out infinite;
+}
+
+@keyframes liveBeacon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.75;
+  }
+}
+
+/* Stage Chip inside Card */
+.stageChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.stageChipMech {
+  background: #2563eb;
+  color: #ffffff;
+  border: 1px solid #1d4ed8;
+}
+
+.stageChipBody {
+  background: #d97706;
+  color: #ffffff;
+  border: 1px solid #b45309;
+}
+
+.stageChipWash {
+  background: #0284c7;
+  color: #ffffff;
+  border: 1px solid #0369a1;
+}
+
+.plateRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.modelTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid var(--border-color);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: clamp(0.8rem, 0.95vw, 1rem);
+  font-weight: 700;
+  color: var(--dark-accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.cardHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .deliveredSection {
   --section-color: #7c3aed; /* Violet */
   --bg-gradient: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #f5f3ff 100%);
