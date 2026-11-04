@@ -459,7 +459,7 @@ export default function JobCardDetailPage() {
   const entryActor = jobCard?.gateEntry?.createdByUser?.fullName || jobCard?.gateEntry?.enteredBy?.fullName || 'Gate Security';
 
   const createdFormatted = jobCard?.createdAt ? formatDateTime(jobCard.createdAt) : '—';
-  const creatorActor = jobCard?.advisor?.fullName || jobCard?.createdByUser?.fullName || 'CRM Team';
+  const creatorActor = jobCard?.advisor?.fullName || jobCard?.createdByUser?.fullName || 'Advisor';
   const estCostFormatted = formatCurrency(totalGrandTotal || displayJobCard?.estimatedCost || 0);
 
   const isMechanicalActive = mechanicalAssignments.some(a => {
@@ -1816,7 +1816,7 @@ export default function JobCardDetailPage() {
                       No Vehicle Photos Uploaded
                     </Typography>
                     <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-                      Inspection photos uploaded during CRM job card creation will appear here.
+                      Inspection photos uploaded during Advisor job card creation will appear here.
                     </Typography>
                   </Box>
                 ) : (

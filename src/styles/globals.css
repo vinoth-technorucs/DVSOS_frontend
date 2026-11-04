@@ -12,6 +12,12 @@ body {
   box-sizing: border-box;
 }
 
+/* Hide native browser password reveal icons (Edge/IE) to prevent duplicate eye icons */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
+
 a {
   text-decoration: none;
   color: inherit;

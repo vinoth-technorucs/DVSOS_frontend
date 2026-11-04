@@ -1,6 +1,7 @@
 export const ROLES = {
   GATE_SECURITY: 'GATE_SECURITY',
   CRM_TEAM: 'CRM_TEAM',
+  ADVISOR: 'CRM_TEAM',
   FLOOR_SUPERVISOR: 'FLOOR_SUPERVISOR',
   BODY_SHOP_SUPERVISOR: 'BODY_SHOP_SUPERVISOR',
   WATER_WASH_TEAM: 'WATER_WASH_TEAM',
@@ -11,7 +12,8 @@ export const ROLES = {
 
 export const ROLE_LABELS = {
   GATE_SECURITY: 'Gate Security',
-  CRM_TEAM: 'CRM Team',
+  CRM_TEAM: 'Advisor',
+  ADVISOR: 'Advisor',
   FLOOR_SUPERVISOR: 'Floor Supervisor',
   BODY_SHOP_SUPERVISOR: 'Body Shop Supervisor',
   WATER_WASH_TEAM: 'Water Wash Team',
@@ -35,6 +37,10 @@ export const mapSlugToRole = (slug) => {
 
   if (normalized === 'admin' || normalized === 'superadmin') {
     return ROLES.SUPER_ADMIN;
+  }
+
+  if (normalized === 'advisor' || normalized === 'serviceadvisor' || normalized === 'crm' || normalized === 'crmteam') {
+    return ROLES.CRM_TEAM;
   }
 
   if (normalized === 'mechanical' || normalized === 'mechanic' || normalized === 'floor') {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Box, Card, IconButton, Menu, MenuItem, Modal, Typography, TextField, Grid, Select } from '@mui/material';
+import { Box, Card, IconButton, Menu, MenuItem, Modal, Typography, TextField, Grid, Select, Tabs, Tab, Chip } from '@mui/material';
 import DataTable from '../../components/common/DataTable';
 import DateFilter from '../../components/common/DateFilter';
 import { Plus, LogIn, Eye, LogOut, MoreVertical } from 'lucide-react';
@@ -13,13 +13,18 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { toastSuccess } from '../../notifications/toast';
 import { gateEntryApi } from '../../api/gateEntryApi';
 import { usePermissions } from '../../hooks/usePermissions';
+import useAuthStore from '../../store/useAuthStore';
 
 export default function GateEntryList({ onAddClick, onViewClick, onEntryClick }) {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const { canRead, canCreate, canUpdate } = usePermissions();
   const canReadGateEntry = canRead('/gate-entry');
   const canCreateGateEntry = canCreate('/gate-entry');
   const canUpdateGateEntry = canUpdate('/gate-entry');
+
+  const isAdvisor = user?.role?.slug && ['crm-team', 'crm_team', 'advisor', 'service-advisor'].includes(user.role.slug.toLowerCase().replace(/_/g, '-'));
+  const [scope, setScope] = useState(isAdvisor ? 'my' : 'all');
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -69,7 +74,8 @@ export default function GateEntryList({ onAddClick, onViewClick, onEntryClick })
         status: statusFilter,
         serviceType: serviceTypeFilter,
         startDate: fromDate,
-        endDate: toDate
+        endDate: toDate,
+        scope
       });
       setEntries(res.data || []);
       setTotal(res.meta?.total || 0);
@@ -82,7 +88,7 @@ export default function GateEntryList({ onAddClick, onViewClick, onEntryClick })
 
   useEffect(() => {
     fetchEntries();
-  }, [page, limit, debSearch, statusFilter, serviceTypeFilter, fromDate, toDate]);
+  }, [page, limit, debSearch, statusFilter, serviceTypeFilter, fromDate, toDate, scope]);
 
   const columns = [
     {
@@ -97,6 +103,27 @@ export default function GateEntryList({ onAddClick, onViewClick, onEntryClick })
     { header: 'Owner Name', accessor: 'ownerName', sortable: false },
     { header: 'Mobile', accessor: 'mobile', sortable: false },
     { header: 'Brand & Model', accessor: 'makeModel', sortable: false },
+    {
+      header: 'Assigned Advisor',
+      sortable: false,
+      render: (row) => {
+        const advisorName = row.assignedAdvisorName || (row.assignedAdvisor ? row.assignedAdvisor.fullName : 'Unassigned');
+        const isAssigned = advisorName && advisorName !== 'Unassigned';
+        return (
+          <Chip
+            size="small"
+            label={advisorName}
+            sx={{
+              fontWeight: 600,
+              fontSize: '0.75rem',
+              bgcolor: isAssigned ? '#EEF2FF' : '#F1F5F9',
+              color: isAssigned ? '#4F46E5' : '#64748B',
+              borderRadius: '6px'
+            }}
+          />
+        );
+      },
+    },
     { header: 'Status', sortable: false, render: (row) => <StatusBadge status={row.status} /> },
   ];
 
@@ -105,14 +132,22 @@ export default function GateEntryList({ onAddClick, onViewClick, onEntryClick })
       <PageHeader
         title="Vehicle Entry"
         breadcrumbs={[{ label: 'Vehicle Entry' }]}
-      // actions={
-      //   onAddClick && canCreateGateEntry ? (
-      //     <Button variant="primary" leftIcon={Plus} onClick={onAddClick}>
-      //       New Entry
-      //     </Button>
-      //   ) : null
-      // }
       />
+
+      <Tabs
+        value={scope}
+        onChange={(e, val) => { setScope(val); setPage(0); }}
+        sx={{
+          mb: 2.5,
+          borderBottom: 1,
+          borderColor: 'divider',
+          '& .MuiTab-root': { fontWeight: 600, textTransform: 'none', fontSize: '0.9rem' }
+        }}
+      >
+        <Tab label="My Assigned Vehicles" value="my" />
+        <Tab label="All Vehicles" value="all" />
+        <Tab label="Unassigned" value="unassigned" />
+      </Tabs>
 
       <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
         <Box sx={{ width: { xs: '100%', md: 350 } }}>

@@ -26,13 +26,15 @@ const GENDER_OPTIONS = [
 
 import { commonValidations } from '../../validations/commonSchema';
 
-const getValidationSchema = (canAssignLocation) => z.object({
+const getValidationSchema = (canAssignLocation, isEdit = false) => z.object({
   fullName: commonValidations.lettersOnly('Full Name'),
   email: commonValidations.email,
   mobile: commonValidations.mobile,
   roleId: commonValidations.requiredNumber('Role'),
   locationId: canAssignLocation ? commonValidations.requiredNumber('Location') : commonValidations.optionalAny,
-  password: commonValidations.optionalPassword,
+  password: isEdit
+    ? z.union([z.string().min(6, 'Password must be at least 6 characters'), z.literal('')]).optional()
+    : commonValidations.password(6),
   status: commonValidations.optionalStatus,
   dob: z.string().trim().min(1, 'Date of Birth is required').refine((val) => {
     const inputDate = new Date(val);
@@ -62,7 +64,7 @@ export default function UserForm() {
   const [locations, setLocations] = useState([]);
 
   const methods = useForm({
-    resolver: zodResolver(getValidationSchema(canAssignLocation)),
+    resolver: zodResolver(getValidationSchema(canAssignLocation, isEdit)),
     defaultValues: {
       fullName: '',
       email: '',
@@ -153,7 +155,7 @@ export default function UserForm() {
         mobile: data.mobile,
         roleId: data.roleId,
         locationId: canAssignLocation ? data.locationId : (currentUser?.locationId || currentUser?.location?.id),
-        password: isEdit ? undefined : (data.password || undefined),
+        password: data.password?.trim() ? data.password.trim() : undefined,
         isActive: data.status === 'ACTIVE',
         dob: data.dob,
         licenceNumber: data.licenceNumber,
@@ -183,14 +185,6 @@ export default function UserForm() {
         <Typography variant="h5" fontWeight={700}>
           {isEdit ? 'Edit User' : 'Add New User'}
         </Typography>
-        {/* <Box
-          component="button"
-          onClick={() => navigate(ROUTES.ADMIN_USERS)}
-          className="back-btn"
-          sx={{ display: 'flex', alignItems: 'center', gap: 1, background: 'none', cursor: 'pointer', color: 'text.secondary', '&:hover': { color: 'text.primary' } }}
-        >
-          <ArrowLeft size={16} /> Back to List
-        </Box> */}
         <BackButton to={ROUTES.ADMIN_USERS} label="Back to User List" />
       </Box>
 
@@ -237,6 +231,19 @@ export default function UserForm() {
               </Grid>
               <Grid item xs={12} md={6}>
                 <RHFSelect name="roleId" label="Role" options={roles} placeholder="Select role" required />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3} sx={{ mb: 3 }}>
+              <Grid item xs={12} md={6}>
+                <RHFTextField
+                  name="password"
+                  label={isEdit ? "New Password (Optional)" : "Password"}
+                  type="password"
+                  placeholder={isEdit ? "Leave blank to keep current password" : "Enter password (min 6 characters)"}
+                  required={!isEdit}
+                  hint={isEdit ? "Only enter if changing password (min 6 characters)" : undefined}
+                />
               </Grid>
             </Grid>
 

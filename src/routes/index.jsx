@@ -8,8 +8,6 @@ import useAuthStore from '../store/useAuthStore';
 import { getFirstReadablePath } from '../utils/authAccess';
 
 import Login from '../pages/Auth/Login';
-import ForgotPassword from '../pages/Auth/ForgotPassword';
-import ResetPassword from '../pages/Auth/ResetPassword';
 import AdminDashboardPage from '../pages/Dashboard/AdminDashboard';
 import UserManagementPage from '../pages/Users/UserList';
 import RoleManagementPage from '../pages/Roles/RoleList';
@@ -120,8 +118,6 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { path: 'login', element: <Login /> },
-      { path: 'forgot-password', element: <ForgotPassword /> },
-      { path: 'reset-password/:token', element: <ResetPassword /> },
     ],
   },
   {

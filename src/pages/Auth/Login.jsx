@@ -107,11 +107,6 @@ export default function Login() {
             />
           </Box>
 
-          <div className={styles.forgotLinkContainer}>
-            <Link to="/forgot-password" className={styles.forgotLink}>
-              Forgot password?
-            </Link>
-          </div>
 
           <Button
             type="submit"

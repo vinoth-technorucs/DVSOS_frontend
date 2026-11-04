@@ -3,7 +3,7 @@ import { Box, Card, IconButton, Menu, MenuItem, Typography, Select, Avatar, Tool
 import DataTable from '../../components/common/DataTable';
 import Button from '../../components/common/Button';
 import PageHeader from '../../components/shared/PageHeader';
-import { Plus, Edit, Trash2, Mail, MoreVertical, Eye } from 'lucide-react';
+import { Plus, Edit, Trash2, Mail, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../config/routes';
 import ConfirmDeleteDialog from '../../components/common/ConfirmDeleteDialog';
@@ -47,6 +47,7 @@ export default function UserList() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
+
 
   useEffect(() => {
     const fetchDropdowns = async () => {
@@ -279,7 +280,6 @@ export default function UserList() {
     <Box sx={{ p: { xs: 2, md: '19px' } }}>
       <PageHeader
         title="User Management"
-        // breadcrumbs={[{ label: 'Users' }]}
         actions={
           canCreateUsers ? <Button
             variant="primary"
@@ -405,6 +405,8 @@ export default function UserList() {
         onConfirm={confirmDelete}
         onCancel={() => setDeleteItem(null)}
       />
+
+
     </Box>
   );
 }

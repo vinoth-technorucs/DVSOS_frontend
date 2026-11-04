@@ -64,6 +64,9 @@ export default function RHFTextField({
                 borderRadius: "8px",
                 bgcolor: "#FFFFFF",
               },
+              "& input::-ms-reveal, & input::-ms-clear": {
+                display: "none",
+              },
             }}
             {...props}
           />
