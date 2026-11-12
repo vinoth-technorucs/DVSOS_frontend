@@ -78,7 +78,7 @@ export default function Topbar() {
   };
 
   const { canRead } = usePermissions();
-  const canReadNotifications = canRead("/notifications");
+  const canReadNotifications = canRead("/notifications") || roleName === "cashier";
 
   const fetchUnreadCount = async () => {
     if (!canReadNotifications) return;

@@ -151,7 +151,7 @@ export default function ManagerDashboard() {
         </Box>
       ) : (
         <>
-          <Grid container spacing={3} sx={{ mb: 3, mt: 0 }}>
+          <Grid container spacing={2} sx={{ mb: 3, mt: 0 }}>
             {data.kpis?.map((kpi) => {
               const cfg = KPI_CONFIG[kpi.label] || {
                 icon: Car,
@@ -159,7 +159,7 @@ export default function ManagerDashboard() {
                 subtitle: '',
               };
               return (
-                <Grid item xs={12} sm={6} md={3} key={kpi.label}>
+                <Grid item xs={12} sm={6} md={6} lg={3} key={kpi.label}>
                   <KpiCard
                     label={kpi.label}
                     value={kpi.value}

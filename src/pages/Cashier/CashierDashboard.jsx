@@ -208,48 +208,29 @@ export default function CashierDashboard() {
               <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
             </IconButton>
           </Tooltip>
-          <MuiButton
-            variant="contained"
-            onClick={() => navigate(ROUTES.CASHIER_PENDING_PAYMENTS)}
-            startIcon={<CreditCard size={16} />}
-            sx={{
-              bgcolor: '#2563EB',
-              '&:hover': { bgcolor: '#1D4ED8' },
-              borderRadius: '10px',
-              textTransform: 'none',
-              fontWeight: 600,
-              fontSize: '0.85rem',
-              py: 0.9,
-              px: 2
-            }}
-          >
-            All Pending ({stats.pendingPayments || 0})
-          </MuiButton>
         </Box>
       </Box>
 
-      <Grid container spacing={2.5} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={3}>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={6} md={6} lg={3}>
           <KpiCard
             label="Pending Collection"
             value={stats.pendingPayments ?? 0}
             subtitle={stats.pendingAmount > 0 ? `${formattedPendingAmount} to collect` : 'All vehicles cleared'}
             icon={Clock}
             theme="amber"
-            onClick={() => navigate(ROUTES.CASHIER_PENDING_PAYMENTS)}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={6} lg={3}>
           <KpiCard
             label="Settled Today"
             value={stats.paidToday ?? 0}
             subtitle="Payments completed today"
             icon={CheckCircle2}
             theme="green"
-            onClick={() => navigate(ROUTES.CASHIER_PAYMENT_HISTORY)}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={6} lg={3}>
           <KpiCard
             label="Revenue Today"
             value={formattedRevenue}
@@ -258,7 +239,7 @@ export default function CashierDashboard() {
             theme="teal"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={6} lg={3}>
           <KpiCard
             label="Payment Mode"
             value="Multi-channel"
@@ -269,12 +250,12 @@ export default function CashierDashboard() {
         </Grid>
       </Grid>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2.5}>
         <Grid item xs={12} lg={8}>
           <Card
             elevation={0}
             sx={{
-              borderRadius: '16px',
+              borderRadius: '12px',
               border: '1px solid #E8EEF5',
               bgcolor: '#FFFFFF',
               overflow: 'hidden'
@@ -282,7 +263,7 @@ export default function CashierDashboard() {
           >
             <Box
               sx={{
-                p: '18px 24px',
+                p: '14px 20px',
                 borderBottom: '1px solid #E8EEF5',
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -292,10 +273,10 @@ export default function CashierDashboard() {
               }}
             >
               <Box>
-                <Typography sx={{ fontWeight: 700, color: '#0F172A', fontSize: '1rem' }}>
+                <Typography sx={{ fontWeight: 700, color: '#0F172A', fontSize: '0.95rem' }}>
                   Ready for Delivery — Collection Queue
                 </Typography>
-                <Typography sx={{ color: '#64748B', fontSize: '0.8rem', mt: 0.2 }}>
+                <Typography sx={{ color: '#64748B', fontSize: '0.75rem', mt: 0.2 }}>
                   Vehicles awaiting payment settlement before gate exit
                 </Typography>
               </Box>
@@ -303,7 +284,7 @@ export default function CashierDashboard() {
                 size="small"
                 endIcon={<ArrowRight size={14} />}
                 onClick={() => navigate(ROUTES.CASHIER_PENDING_PAYMENTS)}
-                sx={{ textTransform: 'none', fontWeight: 600, fontSize: '0.825rem', color: '#2563EB' }}
+                sx={{ textTransform: 'none', fontWeight: 600, fontSize: '0.8rem', color: '#2563EB' }}
               >
                 View Full Queue ({stats.pendingPayments || 0})
               </MuiButton>
@@ -324,7 +305,7 @@ export default function CashierDashboard() {
           <Card
             elevation={0}
             sx={{
-              borderRadius: '16px',
+              borderRadius: '12px',
               border: '1px solid #E8EEF5',
               bgcolor: '#FFFFFF',
               height: '100%',
@@ -334,7 +315,7 @@ export default function CashierDashboard() {
           >
             <Box
               sx={{
-                p: '18px 24px',
+                p: '14px 20px',
                 borderBottom: '1px solid #E8EEF5',
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -342,31 +323,24 @@ export default function CashierDashboard() {
               }}
             >
               <Box>
-                <Typography sx={{ fontWeight: 700, color: '#0F172A', fontSize: '1rem' }}>
+                <Typography sx={{ fontWeight: 700, color: '#0F172A', fontSize: '0.95rem' }}>
                   Today's Settlements
                 </Typography>
-                <Typography sx={{ color: '#64748B', fontSize: '0.8rem', mt: 0.2 }}>
+                <Typography sx={{ color: '#64748B', fontSize: '0.75rem', mt: 0.2 }}>
                   Recently completed receipts
                 </Typography>
               </Box>
-              <MuiButton
-                size="small"
-                onClick={() => navigate(ROUTES.CASHIER_PAYMENT_HISTORY)}
-                sx={{ textTransform: 'none', fontWeight: 600, fontSize: '0.825rem', color: '#2563EB' }}
-              >
-                History
-              </MuiButton>
             </Box>
 
-            <CardContent sx={{ p: 2, flex: 1 }}>
+            <CardContent sx={{ p: 1.5, flex: 1 }}>
               {(stats.recentPaid || []).length === 0 ? (
                 <Box sx={{ py: 6, textAlign: 'center' }}>
-                  <Typography sx={{ color: '#94A3B8', fontSize: '0.875rem' }}>
+                  <Typography sx={{ color: '#94A3B8', fontSize: '0.85rem' }}>
                     No payments settled today yet
                   </Typography>
                 </Box>
               ) : (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   {(stats.recentPaid || []).map((paid) => {
                     const mode = paid.paymentMode || 'CASH';
                     const Icon = PAYMENT_MODE_ICONS[mode] || CreditCard;
@@ -375,22 +349,22 @@ export default function CashierDashboard() {
                       <Box
                         key={paid.id}
                         sx={{
-                          p: 1.75,
-                          borderRadius: '12px',
+                          p: 1.25,
+                          borderRadius: '10px',
                           border: '1px solid #F1F5F9',
                           bgcolor: '#F8FAFC',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          gap: 1.5
+                          gap: 1.25
                         }}
                       >
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
                           <Box
                             sx={{
-                              width: 36,
-                              height: 36,
-                              borderRadius: '10px',
+                              width: 32,
+                              height: 32,
+                              borderRadius: '8px',
                               bgcolor: style.bg,
                               display: 'flex',
                               alignItems: 'center',
@@ -398,27 +372,27 @@ export default function CashierDashboard() {
                               color: style.color
                             }}
                           >
-                            <Icon size={18} />
+                            <Icon size={16} />
                           </Box>
                           <Box>
-                            <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: '#0F172A', fontFamily: 'monospace' }}>
+                            <Typography sx={{ fontWeight: 700, fontSize: '0.8rem', color: '#0F172A', fontFamily: 'monospace' }}>
                               {paid.vehicle?.registrationNo}
                             </Typography>
-                            <Typography sx={{ fontSize: '0.75rem', color: '#64748B' }}>
+                            <Typography sx={{ fontSize: '0.72rem', color: '#64748B' }}>
                               {paid.customer?.fullName} · {paid.paymentDoneAt ? format(new Date(paid.paymentDoneAt), 'hh:mm a') : 'Today'}
                             </Typography>
                           </Box>
                         </Box>
                         <Box sx={{ textAlign: 'right' }}>
-                          <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', color: '#059669' }}>
+                          <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: '#059669' }}>
                             {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(paid.paidAmount || paid.finalAmount || 0)}
                           </Typography>
                           <Chip
                             label={mode}
                             size="small"
                             sx={{
-                              height: 20,
-                              fontSize: '0.675rem',
+                              height: 18,
+                              fontSize: '0.625rem',
                               fontWeight: 700,
                               bgcolor: style.bg,
                               color: style.color,

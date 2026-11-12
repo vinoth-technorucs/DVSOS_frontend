@@ -36,7 +36,7 @@ const theme = createTheme({
     divider: '#dce6f5', // --border
   },
   typography: {
-    fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+    fontFamily: '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
     h1: { fontWeight: 700 },
     h2: { fontWeight: 700 },
     h3: { fontWeight: 700 },
@@ -176,15 +176,15 @@ const theme = createTheme({
     MuiTableHead: {
       styleOverrides: {
         root: {
-          backgroundColor: '#F0F4FF', // --bg (#F0F4FF)
+          backgroundColor: '#F0F4FF',
           '& .MuiTableCell-root': {
-            color: '#475569', // --text2
+            color: '#475569',
             fontWeight: 600,
             textTransform: 'uppercase',
-            fontSize: '0.75rem',
+            fontSize: '0.72rem',
             letterSpacing: '0.05em',
-            padding: '16px 24px',
-            borderBottom: '1px solid #dce6f5', // --border
+            padding: '10px 16px',
+            borderBottom: '1px solid #dce6f5',
             borderTop: 'none',
           },
         },
@@ -206,10 +206,10 @@ const theme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          padding: '16px 24px',
-          borderBottom: '1px solid #dce6f5', // --border
-          color: '#1e293b', // --text
-          fontSize: '0.875rem',
+          padding: '10px 16px',
+          borderBottom: '1px solid #dce6f5',
+          color: '#1e293b',
+          fontSize: '0.8125rem',
         },
       },
     },
@@ -218,13 +218,13 @@ const theme = createTheme({
         root: {
           border: '1px solid rgba(0, 0, 0, 0.12)',
           borderRadius: 8,
-          backgroundColor: '#ffffff', // --white
+          backgroundColor: '#ffffff',
           overflow: 'hidden',
           '& .MuiDataGrid-cell': {
-            borderBottom: '1px solid #dce6f5', // --border
-            padding: '8px 24px',
-            color: '#1e293b', // --text
-            fontSize: '0.875rem',
+            borderBottom: '1px solid #dce6f5',
+            padding: '6px 16px',
+            color: '#1e293b',
+            fontSize: '0.8125rem',
             '&:focus': { outline: 'none' },
             '&:focus-within': { outline: 'none' },
           },

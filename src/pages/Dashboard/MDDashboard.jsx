@@ -169,9 +169,9 @@ export default function MDDashboard() {
       ) : (
         <>
           {/* KPI Cards Row */}
-          <Grid container spacing={3} sx={{ mb: 3 }}>
+          <Grid container spacing={2} sx={{ mb: 3 }}>
             {/* Card 1: Total Vehicles */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={6} lg={3}>
               <KpiCard
                 label="Total Vehicles"
                 value={kpis.totalVehicles?.value || 0}
@@ -182,7 +182,7 @@ export default function MDDashboard() {
             </Grid>
 
             {/* Card 2: Total Job Cards */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={6} lg={3}>
               <KpiCard
                 label="Total Job Cards"
                 value={kpis.totalJobCards?.value || 0}
@@ -193,7 +193,7 @@ export default function MDDashboard() {
             </Grid>
 
             {/* Card 3: Total Revenue */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={6} lg={3}>
               <KpiCard
                 label="Total Revenue"
                 value={`₹${
@@ -208,7 +208,7 @@ export default function MDDashboard() {
             </Grid>
 
             {/* Card 4: Total Users */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={6} lg={3}>
               <KpiCard
                 label="Total Users"
                 value={kpis.totalUsers?.value || 0}

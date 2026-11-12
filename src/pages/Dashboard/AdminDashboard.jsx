@@ -161,9 +161,9 @@ export default function AdminDashboard() {
       sx={{ p: { xs: 2, md: "19px" }, bgcolor: "#F0F4FF", minHeight: "100%" }}
     >
       {/* KPI Cards Row */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
         {kpis.map((kpi, i) => (
-          <Grid item xs={12} sm={6} md={3} key={i}>
+          <Grid item xs={12} sm={6} md={6} lg={3} key={i}>
             <KpiCard
               label={kpi.label}
               value={kpi.value}

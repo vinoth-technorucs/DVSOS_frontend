@@ -79,10 +79,10 @@ export default function KpiCard({
   return (
     <Card
       sx={{
-        borderRadius: "14px",
+        borderRadius: "12px",
         bgcolor: "#FFFFFF",
         border: "1px solid #E8EEF5",
-        boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+        boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
         position: "relative",
         overflow: "hidden",
         height: "100%",
@@ -97,34 +97,33 @@ export default function KpiCard({
           top: 0,
           left: 0,
           right: 0,
-          height: "4px",
+          height: "3.5px",
           backgroundColor: topAccent,
         },
         "&:hover": {
-          transform: onClick ? "translateY(-3px)" : "translateY(-2px)",
-          boxShadow: "0 8px 22px rgba(15, 23, 42, 0.08)",
+          transform: onClick ? "translateY(-2px)" : "translateY(-1px)",
+          boxShadow: "0 6px 18px rgba(15, 23, 42, 0.08)",
           borderColor: "#D5E2EE",
         },
         ...sx,
       }}
       onClick={onClick}
     >
-      <CardContent sx={{ p: "20px 22px !important", flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-        {/* Top Section: Metric Number & Icon Badge */}
+      <CardContent sx={{ p: "14px 18px !important", flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-start",
-            mb: 1.5,
+            mb: 1,
           }}
         >
           <Typography
             variant="h4"
             sx={{
               fontWeight: 800,
-              fontSize: { xs: "1.85rem", sm: "2.1rem" },
-              lineHeight: 1.1,
+              fontSize: { xs: "1.35rem", sm: "1.5rem", md: "1.65rem", lg: "1.75rem" },
+              lineHeight: 1.15,
               color: numColor,
               letterSpacing: "-0.02em",
             }}
@@ -135,9 +134,9 @@ export default function KpiCard({
           {Icon && (
             <Box
               sx={{
-                width: 38,
-                height: 38,
-                borderRadius: "10px",
+                width: 34,
+                height: 34,
+                borderRadius: "8px",
                 bgcolor: badgeBg,
                 color: badgeColor,
                 display: "flex",
@@ -147,17 +146,16 @@ export default function KpiCard({
                 transition: "transform 0.2s ease",
               }}
             >
-              <Icon size={20} strokeWidth={2.2} />
+              <Icon size={18} strokeWidth={2.2} />
             </Box>
           )}
         </Box>
 
-        {/* Bottom Section: Label & Subtitle */}
         <Box>
           {label && (
             <Typography
               sx={{
-                fontSize: "0.85rem",
+                fontSize: "0.8rem",
                 fontWeight: 600,
                 color: "#475569",
                 lineHeight: 1.3,
@@ -174,10 +172,10 @@ export default function KpiCard({
             <Typography
               component="div"
               sx={{
-                fontSize: "0.75rem",
+                fontSize: "0.72rem",
                 color: "#94A3B8",
                 fontWeight: 500,
-                mt: 0.5,
+                mt: 0.25,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
