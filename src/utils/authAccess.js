@@ -42,6 +42,18 @@ export const isAdminRole = (role, user) => {
   );
 };
 
+export const isCashierRole = (role, user) => {
+  const normalizedRole = String(role || '').toLowerCase().replace(/[-_\s]+/g, '');
+  const userSlug = String(user?.role?.slug || '').toLowerCase().replace(/[-_\s]+/g, '');
+  const userName = String(user?.role?.name || '').toLowerCase().replace(/[-_\s]+/g, '');
+
+  return (
+    normalizedRole === 'cashier' ||
+    userSlug === 'cashier' ||
+    userName === 'cashier'
+  );
+};
+
 export const flattenMenuModules = (modules = []) => {
   const flat = [];
 

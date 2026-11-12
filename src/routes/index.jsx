@@ -5,7 +5,7 @@ import KioskLayout from '../layouts/KioskLayout/KioskLayout';
 import ProtectedRoute from '../components/shared/ProtectedRoute';
 import { ROUTES } from '../config/routes';
 import useAuthStore from '../store/useAuthStore';
-import { getFirstReadablePath } from '../utils/authAccess';
+import { getFirstReadablePath, isCashierRole } from '../utils/authAccess';
 
 import Login from '../pages/Auth/Login';
 import AdminDashboardPage from '../pages/Dashboard/AdminDashboard';
@@ -70,10 +70,14 @@ import ServiceHistoryPage from '../pages/Vehicles/VehicleHistory';
 import NotificationsPage from '../pages/Notifications/NotificationsPage';
 import ProfilePage from '../pages/Profile/ProfilePage';
 import NotFound from '../pages/NotFound/NotFound';
+import CashierDashboard from '../pages/Cashier/CashierDashboard';
+import PendingPaymentsList from '../pages/Cashier/PendingPaymentsList';
+import PaymentHistory from '../pages/Cashier/PaymentHistory';
 
 function RootRedirect() {
-  const { isAuthenticated, menus } = useAuthStore();
+  const { isAuthenticated, menus, role, user } = useAuthStore();
   if (!isAuthenticated) return <Navigate to={ROUTES.LOGIN} replace />;
+  if (isCashierRole(role, user)) return <Navigate to={ROUTES.CASHIER_DASHBOARD} replace />;
   return <Navigate to={getFirstReadablePath(menus, ROUTES.PROFILE)} replace />;
 }
 
@@ -271,6 +275,15 @@ export const router = createBrowserRouter([
               { path: 'service-history', element: <ServiceHistoryPage /> },
               { path: 'notifications', element: <NotificationsPage title="Notifications" /> },
               { path: 'profile', element: <ProfilePage title="Profile" /> },
+            ],
+          },
+
+          {
+            element: <ProtectedRoute enforcePath />,
+            children: [
+              { path: 'cashier-dashboard', element: <CashierDashboard /> },
+              { path: 'cashier/pending-payments', element: <PendingPaymentsList /> },
+              { path: 'cashier/payment-history', element: <PaymentHistory /> },
             ],
           },
 

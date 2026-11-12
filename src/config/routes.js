@@ -89,5 +89,9 @@ export const ROUTES = {
   NOTIFICATIONS: '/notifications',
   PROFILE: '/profile',
   SETTINGS: '/settings',
+
+  CASHIER_DASHBOARD: '/cashier-dashboard',
+  CASHIER_PENDING_PAYMENTS: '/cashier/pending-payments',
+  CASHIER_PAYMENT_HISTORY: '/cashier/payment-history',
 };
 

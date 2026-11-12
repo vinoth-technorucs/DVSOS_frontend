@@ -17,6 +17,9 @@ export const gateEntryApi = {
   update: async (id, data) => {
     return await axiosInstance.put(ENDPOINTS.GATE_ENTRY.UPDATE(id), data);
   },
+  submitExit: async (id, data) => {
+    return await axiosInstance.put(ENDPOINTS.GATE_ENTRY.EXIT(id), data);
+  },
   exportExcel: async (params) => {
     return await axiosInstance.get(ENDPOINTS.GATE_ENTRY.LIST, {
       params: { ...params, export: 'true' },

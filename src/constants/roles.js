@@ -5,6 +5,7 @@ export const ROLES = {
   FLOOR_SUPERVISOR: 'FLOOR_SUPERVISOR',
   BODY_SHOP_SUPERVISOR: 'BODY_SHOP_SUPERVISOR',
   WATER_WASH_TEAM: 'WATER_WASH_TEAM',
+  CASHIER: 'CASHIER',
   MANAGER: 'MANAGER',
   MD: 'MD',
   SUPER_ADMIN: 'SUPER_ADMIN',
@@ -17,6 +18,7 @@ export const ROLE_LABELS = {
   FLOOR_SUPERVISOR: 'Floor Supervisor',
   BODY_SHOP_SUPERVISOR: 'Body Shop Supervisor',
   WATER_WASH_TEAM: 'Water Wash Team',
+  CASHIER: 'Cashier',
   MANAGER: 'Manager',
   MD: 'Managing Director',
   SUPER_ADMIN: 'Super Admin',
@@ -49,6 +51,10 @@ export const mapSlugToRole = (slug) => {
 
   if (normalized === 'waterwashsupervisor' || normalized === 'waterwash' || normalized === 'wash') {
     return ROLES.WATER_WASH_TEAM;
+  }
+
+  if (normalized === 'cashier') {
+    return ROLES.CASHIER;
   }
 
   const matchedRole = Object.values(ROLES).find(r => {

@@ -10,7 +10,7 @@ import SearchBar from '../../components/common/SearchBar';
 import PageHeader from '../../components/shared/PageHeader';
 import VehicleNumberPlate from '../../components/common/VehicleNumberPlate';
 import { useDebounce } from '../../hooks/useDebounce';
-import { toastSuccess } from '../../notifications/toast';
+import { toastSuccess, toastError } from '../../notifications/toast';
 import { gateEntryApi } from '../../api/gateEntryApi';
 import { usePermissions } from '../../hooks/usePermissions';
 import useAuthStore from '../../store/useAuthStore';
@@ -41,6 +41,8 @@ export default function GateEntryList({ onAddClick, onViewClick, onEntryClick })
   const [exitVehicle, setExitVehicle] = useState(null);
   const [exitDate, setExitDate] = useState(new Date().toISOString().split('T')[0]);
   const [exitTime, setExitTime] = useState(new Date().toTimeString().split(' ')[0].slice(0, 5));
+  const [exitRemarks, setExitRemarks] = useState('');
+  const [submittingExit, setSubmittingExit] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedEntry, setSelectedEntry] = useState(null);
@@ -56,12 +58,23 @@ export default function GateEntryList({ onAddClick, onViewClick, onEntryClick })
     setSelectedEntry(null);
   };
 
-  const handleExitSubmit = (e) => {
+  const handleExitSubmit = async (e) => {
     e.preventDefault();
     if (!exitVehicle) return;
-    toastSuccess(`Vehicle ${exitVehicle.vehicleNumber} exit registered at ${exitDate} ${exitTime} successfully!`);
-    setShowExitModal(false);
-    setExitVehicle(null);
+    try {
+      setSubmittingExit(true);
+      await gateEntryApi.submitExit(exitVehicle.id, {
+        remarks: exitRemarks.trim() || undefined
+      });
+      toastSuccess(`Vehicle ${exitVehicle.vehicleNumber} exit recorded successfully!`);
+      setShowExitModal(false);
+      setExitVehicle(null);
+      fetchEntries();
+    } catch (err) {
+      toastError(err?.message || 'Failed to record exit. Please ensure payment is recorded by cashier.');
+    } finally {
+      setSubmittingExit(false);
+    }
   };
 
   const fetchEntries = async () => {
@@ -125,6 +138,115 @@ export default function GateEntryList({ onAddClick, onViewClick, onEntryClick })
       },
     },
     { header: 'Status', sortable: false, render: (row) => <StatusBadge status={row.status} /> },
+    {
+      header: 'Payment Status',
+      sortable: false,
+      render: (row) => {
+        if (row.status === 'EXITED' || row.status === 'CLOSED') {
+          return (
+            <Chip
+              size="small"
+              label="Exited"
+              sx={{ fontWeight: 600, fontSize: '0.75rem', bgcolor: '#F1F5F9', color: '#64748B', borderRadius: '6px' }}
+            />
+          );
+        }
+        if (row.paymentStatus === 'PAYMENT_PENDING') {
+          return (
+            <Chip
+              size="small"
+              label="Payment Pending"
+              sx={{
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                bgcolor: '#FEF3C7',
+                color: '#D97706',
+                border: '1px solid #FCD34D',
+                borderRadius: '6px'
+              }}
+            />
+          );
+        }
+        if (row.paymentStatus === 'PAYMENT_DONE') {
+          return (
+            <Chip
+              size="small"
+              label="Payment Done"
+              sx={{
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                bgcolor: '#DCFCE7',
+                color: '#16A34A',
+                border: '1px solid #86EFAC',
+                borderRadius: '6px'
+              }}
+            />
+          );
+        }
+        return (
+          <Typography variant="caption" sx={{ color: '#94A3B8' }}>
+            N/A
+          </Typography>
+        );
+      }
+    },
+    {
+      header: 'Actions',
+      sortable: false,
+      align: 'center',
+      render: (row) => {
+        const isExited = row.status === 'EXITED' || row.status === 'CLOSED';
+        if (isExited) {
+          return (
+            <Typography variant="caption" sx={{ color: '#94A3B8', fontWeight: 600 }}>
+              —
+            </Typography>
+          );
+        }
+
+        const canVehicleExit = row.canExit !== false;
+
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Tooltip
+              title={
+                !canVehicleExit
+                  ? 'Payment pending. Vehicle cannot exit until payment is completed by cashier.'
+                  : 'Register Vehicle Exit'
+              }
+            >
+              <span>
+                <IconButton
+                  size="small"
+                  disabled={!canVehicleExit || !canUpdateGateEntry}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setExitVehicle(row);
+                    setExitDate(new Date().toISOString().split('T')[0]);
+                    setExitTime(new Date().toTimeString().split(' ')[0].slice(0, 5));
+                    setExitRemarks('');
+                    setShowExitModal(true);
+                  }}
+                  sx={{
+                    bgcolor: canVehicleExit ? '#EFF6FF' : '#F1F5F9',
+                    color: canVehicleExit ? '#2563EB' : '#94A3B8',
+                    border: '1px solid',
+                    borderColor: canVehicleExit ? '#BFDBFE' : '#E2E8F0',
+                    borderRadius: '8px',
+                    p: 0.75,
+                    '&:hover': {
+                      bgcolor: canVehicleExit ? '#DBEAFE' : '#F1F5F9',
+                    }
+                  }}
+                >
+                  <LogOut size={16} />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </Box>
+        );
+      }
+    }
   ];
 
   return (
@@ -239,10 +361,34 @@ export default function GateEntryList({ onAddClick, onViewClick, onEntryClick })
           <form onSubmit={handleExitSubmit} noValidate>
             <Box sx={{ p: 3 }}>
               {exitVehicle && (
-                <Box sx={{ mb: 3, p: 2, bgcolor: '#F9FAFB', borderRadius: 2, border: '1px solid #E5E7EB' }}>
-                  <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase' }}>Vehicle Details</Typography>
-                  <Typography variant="subtitle1" fontWeight={700} sx={{ mt: 0.5 }}>{exitVehicle.vehicleNumber}</Typography>
-                  <Typography variant="body2" color="text.secondary">{exitVehicle.makeModel} • {exitVehicle.ownerName}</Typography>
+                <Box sx={{ mb: 2.5, p: 2, bgcolor: '#F9FAFB', borderRadius: 2, border: '1px solid #E5E7EB' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <Box>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase' }}>Vehicle Details</Typography>
+                      <Typography variant="subtitle1" fontWeight={700} sx={{ mt: 0.5 }}>{exitVehicle.vehicleNumber}</Typography>
+                      <Typography variant="body2" color="text.secondary">{exitVehicle.makeModel} • {exitVehicle.ownerName}</Typography>
+                    </Box>
+                    <Chip
+                      size="small"
+                      label={exitVehicle.paymentStatus === 'PAYMENT_DONE' ? 'Payment Done' : exitVehicle.paymentStatus === 'PAYMENT_PENDING' ? 'Payment Pending' : 'Enquiry'}
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: '0.75rem',
+                        bgcolor: exitVehicle.paymentStatus === 'PAYMENT_DONE' ? '#DCFCE7' : exitVehicle.paymentStatus === 'PAYMENT_PENDING' ? '#FEF3C7' : '#F1F5F9',
+                        color: exitVehicle.paymentStatus === 'PAYMENT_DONE' ? '#16A34A' : exitVehicle.paymentStatus === 'PAYMENT_PENDING' ? '#D97706' : '#64748B',
+                        border: '1px solid',
+                        borderColor: exitVehicle.paymentStatus === 'PAYMENT_DONE' ? '#86EFAC' : exitVehicle.paymentStatus === 'PAYMENT_PENDING' ? '#FCD34D' : '#E2E8F0',
+                        borderRadius: '6px'
+                      }}
+                    />
+                  </Box>
+                  {exitVehicle.paymentStatus === 'PAYMENT_PENDING' && (
+                    <Box sx={{ mt: 1.5, p: 1.5, bgcolor: '#FFFBEB', borderRadius: 1.5, border: '1px solid #FDE68A' }}>
+                      <Typography variant="caption" sx={{ color: '#B45309', fontWeight: 600, display: 'block' }}>
+                        Payment Pending: Cashier must record payment before exit can be confirmed.
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
               )}
 
@@ -271,11 +417,31 @@ export default function GateEntryList({ onAddClick, onViewClick, onEntryClick })
                     size="small"
                   />
                 </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Exit Remarks"
+                    multiline
+                    rows={2}
+                    fullWidth
+                    value={exitRemarks}
+                    onChange={(e) => setExitRemarks(e.target.value)}
+                    placeholder="Optional remarks (e.g., gate number, gate pass verified)..."
+                    size="small"
+                  />
+                </Grid>
               </Grid>
             </Box>
             <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
               <Button variant="secondary" type="button" onClick={() => setShowExitModal(false)}>Cancel</Button>
-              {canUpdateGateEntry && <Button variant="primary" type="submit">Confirm Exit</Button>}
+              {canUpdateGateEntry && (
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={submittingExit || exitVehicle?.paymentStatus === 'PAYMENT_PENDING'}
+                >
+                  {submittingExit ? 'Confirming...' : 'Confirm Exit'}
+                </Button>
+              )}
             </Box>
           </form>
         </Box>

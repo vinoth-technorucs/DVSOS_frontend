@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import useAuthStore from '../../store/useAuthStore';
 import { ROUTES } from '../../config/routes';
-import { getFirstReadablePath, hasMenuAction, hasReadableModule, hasReadablePath, normalizePath } from '../../utils/authAccess';
+import { getFirstReadablePath, hasMenuAction, hasReadableModule, hasReadablePath, isCashierRole, normalizePath } from '../../utils/authAccess';
 
 const AUTHENTICATED_ONLY_PATHS = new Set([ ROUTES.PROFILE, ROUTES.SETTINGS ]);
 
@@ -70,6 +70,23 @@ export default function ProtectedRoute({ allowedModules = [], requiredPath, enfo
     return <Navigate to={ROUTES.ADMIN_DASHBOARD} replace />;
   }
 
+  const isCashier = isCashierRole(role, user);
+
+  if (isCashier) {
+    const isAllowedCashierPath =
+      currentNormalizedPath.startsWith('/cashier') ||
+      currentNormalizedPath === '/profile' ||
+      currentNormalizedPath === '/notifications';
+
+    if (!isAllowedCashierPath) {
+      return <Navigate to={ROUTES.CASHIER_DASHBOARD} replace />;
+    }
+  }
+
+  if (!isCashier && !isAdmin && currentNormalizedPath.startsWith('/cashier')) {
+    return <Navigate to={getFirstReadablePath(menus, ROUTES.PROFILE)} replace />;
+  }
+
   if (allowedModules.length > 0 && !hasReadableModule(menus, allowedModules)) {
     return <Navigate to={getFirstReadablePath(menus, ROUTES.PROFILE)} replace />;
   }
@@ -77,6 +94,10 @@ export default function ProtectedRoute({ allowedModules = [], requiredPath, enfo
   const pathToCheck = requiredPath || (enforcePath ? location.pathname : null);
 
   if (pathToCheck && AUTHENTICATED_ONLY_PATHS.has(pathToCheck)) {
+    return <Outlet />;
+  }
+
+  if (isCashier && currentNormalizedPath.startsWith('/cashier')) {
     return <Outlet />;
   }
 

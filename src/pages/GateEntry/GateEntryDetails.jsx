@@ -1,33 +1,50 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Grid, Typography, CircularProgress } from '@mui/material';
-import { ArrowLeft, LogIn, LogOut, Clock } from 'lucide-react';
+import { ArrowLeft, LogIn, LogOut, Clock, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
 import Button from '../../components/common/Button';
 import StatusBadge from '../../components/common/StatusBadge';
 import { formatDateTime } from '../../utils/formatters';
 import styles from './GateEntry.module.css';
 import { gateEntryApi } from '../../api/gateEntryApi';
+import { toastSuccess, toastError } from '../../notifications/toast';
 
 export default function GateEntryDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [submittingExit, setSubmittingExit] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await gateEntryApi.getBySlug(slug);
+      setVehicle(res.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const res = await gateEntryApi.getBySlug(slug);
-        setVehicle(res.data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
     if (slug) fetchData();
   }, [slug]);
+
+  const handleConfirmExit = async () => {
+    if (!vehicle) return;
+    try {
+      setSubmittingExit(true);
+      await gateEntryApi.submitExit(vehicle.id, { remarks: 'Exit registered from web pass details' });
+      toastSuccess(`Vehicle ${vehicle.vehicleNumber} exit recorded successfully!`);
+      await fetchData();
+    } catch (err) {
+      toastError(err?.message || 'Failed to record exit. Please ensure payment is recorded by cashier.');
+    } finally {
+      setSubmittingExit(false);
+    }
+  };
 
   if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
   if (!vehicle) return <Box sx={{ p: 4 }}><Typography>Gate entry not found.</Typography></Box>;
@@ -104,6 +121,48 @@ export default function GateEntryDetails() {
           </Box>
         )}
 
+        {/* Payment & Exit Clearance */}
+        <Box>
+          <Typography variant="subtitle1" fontWeight={700} color="primary.main" sx={{ mb: 2, borderBottom: '1.5px solid', borderColor: 'divider', pb: 0.5 }}>
+            Payment & Exit Clearance
+          </Typography>
+          {vehicle.paymentStatus === 'PAYMENT_PENDING' ? (
+            <Box sx={{ p: 2.5, bgcolor: '#FFFBEB', borderRadius: 2, border: '1.5px solid #FDE68A', display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+              <Box sx={{ p: 1, bgcolor: '#FEF3C7', borderRadius: '8px', color: '#D97706', display: 'flex' }}>
+                <AlertTriangle size={24} />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle1" fontWeight={700} color="#92400E">
+                  Payment Pending — Exit Blocked
+                </Typography>
+                <Typography variant="body2" color="#78350F" sx={{ mt: 0.5 }}>
+                  Vehicle exit is locked. The customer must pay and the Cashier must mark the job card as paid before gate exit can be confirmed.
+                </Typography>
+              </Box>
+            </Box>
+          ) : vehicle.paymentStatus === 'PAYMENT_DONE' ? (
+            <Box sx={{ p: 2.5, bgcolor: '#ECFDF5', borderRadius: 2, border: '1.5px solid #A7F3D0', display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+              <Box sx={{ p: 1, bgcolor: '#DCFCE7', borderRadius: '8px', color: '#16A34A', display: 'flex' }}>
+                <CheckCircle2 size={24} />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle1" fontWeight={700} color="#065F46">
+                  Payment Completed — Cleared for Exit
+                </Typography>
+                <Typography variant="body2" color="#047857" sx={{ mt: 0.5 }}>
+                  Customer payment has been recorded by Cashier. Vehicle is authorized for security gate exit.
+                </Typography>
+              </Box>
+            </Box>
+          ) : (
+            <Box sx={{ p: 2, bgcolor: '#F8FAFC', borderRadius: 2, border: '1.5px solid #E2E8F0' }}>
+              <Typography variant="body2" color="text.secondary">
+                Non-billable or enquiry visit. Standard exit procedures apply.
+              </Typography>
+            </Box>
+          )}
+        </Box>
+
         {/* Operations Logs Section */}
         <Box>
           <Typography variant="subtitle1" fontWeight={700} color="primary.main" sx={{ mb: 2, borderBottom: '1.5px solid', borderColor: 'divider', pb: 0.5 }}>
@@ -137,13 +196,26 @@ export default function GateEntryDetails() {
                   </Typography>
                 </Box>
               ) : (
-                <Box sx={{ p: 2, bgcolor: 'warning.50', borderRadius: 2, border: '1.5px solid', borderColor: 'warning.100', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <Typography variant="subtitle2" fontWeight={700} color="warning.main" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Clock size={16} /> Exit Pending
-                  </Typography>
-                  <Typography variant="body2" color="warning.main" sx={{ mt: 0.5 }}>
-                    Vehicle is currently inside premises.
-                  </Typography>
+                <Box sx={{ p: 2.5, bgcolor: vehicle.canExit ? '#F0FDF4' : '#FFFBEB', borderRadius: 2, border: '1.5px solid', borderColor: vehicle.canExit ? '#BBF7D0' : '#FDE68A', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <Box>
+                    <Typography variant="subtitle2" fontWeight={700} color={vehicle.canExit ? 'success.dark' : 'warning.dark'} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Clock size={16} /> {vehicle.canExit ? 'Ready for Exit' : 'Exit Blocked'}
+                    </Typography>
+                    <Typography variant="body2" color={vehicle.canExit ? 'success.dark' : 'warning.dark'} sx={{ mt: 0.5 }}>
+                      {vehicle.canExit
+                        ? 'Vehicle is cleared to exit the premises.'
+                        : 'Vehicle cannot exit until customer completes payment with cashier.'}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ mt: 2 }}>
+                    <Button
+                      variant="primary"
+                      disabled={!vehicle.canExit || submittingExit}
+                      onClick={handleConfirmExit}
+                    >
+                      {submittingExit ? 'Processing Exit...' : 'Confirm Vehicle Exit'}
+                    </Button>
+                  </Box>
                 </Box>
               )}
             </Grid>

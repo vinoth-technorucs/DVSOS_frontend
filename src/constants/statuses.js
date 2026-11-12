@@ -13,6 +13,8 @@ export const STATUS = {
   WATER_WASH_ASSIGNED: 'WATER_WASH_ASSIGNED',
   WATER_WASH_IN_PROGRESS: 'WATER_WASH_IN_PROGRESS',
   WATER_WASH_COMPLETED: 'WATER_WASH_COMPLETED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  PAYMENT_DONE: 'PAYMENT_DONE',
 };
 
 export const STATUS_LABELS = {
@@ -45,6 +47,8 @@ export const STATUS_LABELS = {
   EXITED: 'Exited',
   ACTIVE: 'Active',
   INACTIVE: 'Inactive',
+  PAYMENT_PENDING: 'Awaiting Payment',
+  PAYMENT_DONE: 'Payment Completed',
 };
 
 export const STATUS_VARIANTS = {
@@ -77,5 +81,7 @@ export const STATUS_VARIANTS = {
   EXITED: 'danger',
   ACTIVE: 'success',
   INACTIVE: 'danger',
+  PAYMENT_PENDING: 'warning',
+  PAYMENT_DONE: 'success',
 };
 

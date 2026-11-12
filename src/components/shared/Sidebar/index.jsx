@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AlertCircle, Bell, Building, Car, CheckSquare, ChevronDown, ChevronRight, ClipboardList, Clock, Database, Droplets, FileText, LayoutDashboard, LogIn, LogOut, MapPin, Monitor, Package, Paintbrush, Plus, Settings, ShieldCheck, Truck, User, Users, Wrench, } from "lucide-react";
+import { AlertCircle, Bell, Building, Car, CheckSquare, ChevronDown, ChevronRight, ClipboardList, Clock, CreditCard, Database, Droplets, FileText, History, LayoutDashboard, LogIn, LogOut, MapPin, Monitor, Package, Paintbrush, Plus, Settings, ShieldCheck, Truck, User, Users, Wrench, } from "lucide-react";
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Collapse, Box, Typography, Divider, IconButton, useTheme, useMediaQuery, Tooltip, Popover, Avatar, Menu, MenuItem, } from "@mui/material";
 import useAuthStore from "../../../store/useAuthStore";
 import useUIStore from "../../../store/useUIStore";
-import { buildSidebarMenus } from "../../../utils/authAccess";
+import { buildSidebarMenus, isCashierRole } from "../../../utils/authAccess";
 import { ROUTES } from "../../../config/routes";
 import { getInitials, avatarColor } from "../../../utils/helpers";
 import { removeRegisteredDeviceToken } from "../../../config/firebase";
@@ -18,9 +18,11 @@ const ICON_MAP = {
   CheckSquare,
   ClipboardList,
   Clock,
+  CreditCard,
   Database,
   Droplets,
   FileText,
+  History,
   LayoutDashboard,
   LogIn,
   LogOut,
@@ -90,32 +92,45 @@ export default function Sidebar() {
     String(user?.role?.name || "").toLowerCase().replace(/[-_\s]+/g, "") === "admin" ||
     String(user?.role?.name || "").toLowerCase().replace(/[-_\s]+/g, "") === "superadmin";
 
+  const isCashierUser = isCashierRole(role, user);
+
   const rawMenus = buildSidebarMenus(allowedMenus, ICON_MAP);
-  /* Original without Admin role management filter:
-  const menus = isMdUser
-    ? rawMenus.filter(
-      (m) =>
-        m.path !== "/roles" &&
-        m.path !== "/md-stage-schedules" &&
-        m.path !== "/gate-entry"
-    )
-    : rawMenus;
-  */
-  const menus = rawMenus.filter((m) => {
-    if (
-      isMdUser &&
-      (m.path === "/roles" ||
-        m.path === "/md-stage-schedules" ||
-        m.path === "/gate-entry")
-    ) {
-      return false;
-    }
-    // Hide Role Management for Admin login
-    if (isAdminUser && (m.path === "/roles" || m.path === "/roles/privileges")) {
-      return false;
-    }
-    return true;
-  });
+
+  const CASHIER_STATIC_MENUS = [
+    { label: "Cashier Dashboard", path: ROUTES.CASHIER_DASHBOARD, icon: LayoutDashboard },
+    { label: "Pending Payments", path: ROUTES.CASHIER_PENDING_PAYMENTS, icon: CreditCard },
+    { label: "Payment History", path: ROUTES.CASHIER_PAYMENT_HISTORY, icon: History },
+    { label: "Notifications", path: ROUTES.NOTIFICATIONS, icon: Bell },
+  ];
+
+  let menus = [];
+
+  if (isCashierUser) {
+    const cashierRawMenus = rawMenus.filter((m) =>
+      m.path?.startsWith('/cashier') || m.path === '/notifications' || m.path === '/profile'
+    );
+    menus = cashierRawMenus.length > 0 ? cashierRawMenus : CASHIER_STATIC_MENUS;
+  } else {
+    menus = rawMenus.filter((m) => {
+      // Cashier menus must ONLY be visible to Cashier role
+      if (m.path?.startsWith('/cashier') || m.path === '/cashier-dashboard') {
+        return false;
+      }
+      if (
+        isMdUser &&
+        (m.path === "/roles" ||
+          m.path === "/md-stage-schedules" ||
+          m.path === "/gate-entry")
+      ) {
+        return false;
+      }
+      // Hide Role Management for Admin login
+      if (isAdminUser && (m.path === "/roles" || m.path === "/roles/privileges")) {
+        return false;
+      }
+      return true;
+    });
+  }
 
   const handlePopoverOpen = (event, label) => {
     if (isDesktopFlyout) {

@@ -31,6 +31,7 @@ export const ENDPOINTS = {
     CREATE: '/gate-entries/create',
     DETAIL: (id) => `/gate-entries/detail/${id}`,
     UPDATE: (id) => `/gate-entries/update/${id}`,
+    EXIT: (id) => `/gate-entries/exit/${id}`,
     TODAY: '/gate-entries/today',
   },
 
@@ -268,5 +269,14 @@ export const ENDPOINTS = {
     SEND: (id) => `/chat/job-card/${id}/messages`,
     MARK_READ: (id) => `/chat/job-card/${id}/read`,
     RECENT_CHATS: '/chat/recent-chats',
-  }
+  },
+
+  CASHIER: {
+    DASHBOARD_STATS: '/cashier/dashboard-stats',
+    PENDING_PAYMENTS: '/cashier/pending-payments',
+    PAYMENT_HISTORY: '/cashier/payment-history',
+    JOB_CARD_DETAIL: (jobCardId) => `/cashier/job-cards/${jobCardId}`,
+    MARK_PAID: (jobCardId) => `/cashier/job-cards/${jobCardId}/mark-paid`,
+  },
 };
+

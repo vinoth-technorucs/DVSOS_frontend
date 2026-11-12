@@ -14,19 +14,24 @@ import { loginApi } from "../../api/authApi";
 import {
   getFirstReadablePath,
   hasAnyReadableMenu,
+  isCashierRole,
 } from "../../utils/authAccess";
 import logoImg from "../../assets/img/logo.jpg";
 import styles from "./Auth.module.css";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login, isAuthenticated, menus } = useAuthStore();
+  const { login, isAuthenticated, menus, role: authRole, user: authUser } = useAuthStore();
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(getFirstReadablePath(menus, ROUTES.PROFILE));
+      if (isCashierRole(authRole, authUser)) {
+        navigate(ROUTES.CASHIER_DASHBOARD);
+      } else {
+        navigate(getFirstReadablePath(menus, ROUTES.PROFILE));
+      }
     }
-  }, [isAuthenticated, menus, navigate]);
+  }, [isAuthenticated, menus, navigate, authRole, authUser]);
 
   const methods = useForm({
     resolver: zodResolver(authSchema),
@@ -46,7 +51,7 @@ export default function Login() {
         const userMenus = response.data.menus || [];
         const role = user?.role?.slug || null;
 
-        if (!hasAnyReadableMenu(userMenus)) {
+        if (!hasAnyReadableMenu(userMenus) && !isCashierRole(role, user)) {
           toastError(
             "Your role is not configured for web access. Please contact admin.",
           );
@@ -54,9 +59,10 @@ export default function Login() {
         }
 
         login(user, role, token, userMenus);
-        navigate(
-          getFirstReadablePath(userMenus, redirectPath || ROUTES.PROFILE),
-        );
+        const destination = isCashierRole(role, user)
+          ? ROUTES.CASHIER_DASHBOARD
+          : getFirstReadablePath(userMenus, redirectPath || ROUTES.PROFILE);
+        navigate(destination);
       } else {
         toastError(response?.message || "Login failed. Please try again.");
       }
