@@ -6,7 +6,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import {
   CreditCard, CheckCircle2, IndianRupee, Clock,
-  ArrowRight, RefreshCw, Eye, Wallet, Banknote, Smartphone, Globe
+  ArrowRight, RefreshCw, Eye, Banknote, Smartphone, Globe
 } from 'lucide-react';
 import KpiCard from '../../components/common/KpiCard';
 import DataTable from '../../components/common/DataTable';
@@ -212,7 +212,7 @@ export default function CashierDashboard() {
       </Box>
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={6} lg={3}>
+        <Grid item xs={12} sm={4}>
           <KpiCard
             label="Pending Collection"
             value={stats.pendingPayments ?? 0}
@@ -221,7 +221,7 @@ export default function CashierDashboard() {
             theme="amber"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={3}>
+        <Grid item xs={12} sm={4}>
           <KpiCard
             label="Settled Today"
             value={stats.paidToday ?? 0}
@@ -230,22 +230,13 @@ export default function CashierDashboard() {
             theme="green"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={3}>
+        <Grid item xs={12} sm={4}>
           <KpiCard
             label="Revenue Today"
             value={formattedRevenue}
             subtitle="Total collections today"
             icon={IndianRupee}
             theme="teal"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={3}>
-          <KpiCard
-            label="Payment Mode"
-            value="Multi-channel"
-            subtitle="Cash, UPI, Card, Online"
-            icon={Wallet}
-            theme="blue"
           />
         </Grid>
       </Grid>
