@@ -100,14 +100,13 @@ export default function Sidebar() {
     { label: "Cashier Dashboard", path: ROUTES.CASHIER_DASHBOARD, icon: LayoutDashboard },
     { label: "Pending Payments", path: ROUTES.CASHIER_PENDING_PAYMENTS, icon: CreditCard },
     { label: "Payment History", path: ROUTES.CASHIER_PAYMENT_HISTORY, icon: History },
-    { label: "Notifications", path: ROUTES.NOTIFICATIONS, icon: Bell },
   ];
 
   let menus = [];
 
   if (isCashierUser) {
     const cashierRawMenus = rawMenus.filter((m) =>
-      m.path?.startsWith('/cashier') || m.path === '/notifications' || m.path === '/profile'
+      m.path?.startsWith('/cashier')
     );
     menus = cashierRawMenus.length > 0 ? cashierRawMenus : CASHIER_STATIC_MENUS;
   } else {
