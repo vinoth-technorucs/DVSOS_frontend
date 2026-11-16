@@ -597,6 +597,18 @@
   border: 1px solid #0369a1;
 }
 
+.stageChipPending {
+  background: #ea580c;
+  color: #ffffff;
+  border: 1px solid #c2410c;
+}
+
+.stageChipReady {
+  background: #16a34a;
+  color: #ffffff;
+  border: 1px solid #15803d;
+}
+
 .plateRow {
   display: flex;
   align-items: center;
@@ -655,6 +667,11 @@
   box-shadow: 0 6px 16px var(--shadow-color);
   border: 3px solid var(--light-accent);
   z-index: 1;
+}
+
+.carBadgePending {
+  background: #ea580c;
+  border-color: #ffedd5;
 }
 
 @media (max-width: 1199.95px) {

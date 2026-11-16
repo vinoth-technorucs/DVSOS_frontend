@@ -13,6 +13,7 @@ import {
   Activity,
   Paintbrush,
   Droplets,
+  CreditCard,
 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './Kiosk.module.css';
@@ -144,6 +145,7 @@ export default function KioskDisplay() {
       model: j.vehicleInfo,
       time: formatReadyTime(j.updatedAt),
       customerName: j.customerName,
+      status: j.status,
     }));
 
   const animatedActive = useAutoScroll(activeJobs, 4, 3500);
@@ -355,9 +357,20 @@ export default function KioskDisplay() {
                       <span className={styles.jobId}>
                         <ClipboardList size={14} /> {item.id}
                       </span>
-                      <span className={styles.timeBadge}>
-                        <Clock size={14} /> Since {item.time}
-                      </span>
+                      <div className={styles.cardHeaderRight}>
+                        {item.status === 'PAYMENT_PENDING' ? (
+                          <span className={`${styles.stageChip} ${styles.stageChipPending}`}>
+                            <CreditCard size={13} /> Payment Pending
+                          </span>
+                        ) : (
+                          <span className={`${styles.stageChip} ${styles.stageChipReady}`}>
+                            <CheckCircle2 size={13} /> Ready
+                          </span>
+                        )}
+                        <span className={styles.timeBadge}>
+                          <Clock size={14} /> Since {item.time}
+                        </span>
+                      </div>
                     </div>
 
                     <div className={styles.cardBody}>
@@ -388,8 +401,12 @@ export default function KioskDisplay() {
                           </div>
                           <h3 className={styles.customerName}>{item.customerName}</h3>
                         </div>
-                        <div className={styles.carBadge}>
-                          <CheckCircle2 size={20} />
+                        <div className={`${styles.carBadge} ${item.status === 'PAYMENT_PENDING' ? styles.carBadgePending : ''}`}>
+                          {item.status === 'PAYMENT_PENDING' ? (
+                            <CreditCard size={20} />
+                          ) : (
+                            <CheckCircle2 size={20} />
+                          )}
                         </div>
                       </div>
                     </div>
