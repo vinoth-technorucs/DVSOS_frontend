@@ -200,11 +200,10 @@ export default function MDDashboard() {
             <Grid item xs={12} sm={6} md={6} lg={3}>
               <KpiCard
                 label="Total Revenue"
-                value={`₹${
-                  kpis.totalRevenue?.value > 100000
-                    ? (kpis.totalRevenue.value / 100000).toFixed(1) + "L"
-                    : (kpis.totalRevenue?.value || 0).toLocaleString("en-IN")
-                }`}
+                value={`₹${kpis.totalRevenue?.value > 100000
+                  ? (kpis.totalRevenue.value / 100000).toFixed(1) + "L"
+                  : (kpis.totalRevenue?.value || 0).toLocaleString("en-IN")
+                  }`}
                 subtitle={kpis.totalRevenue?.comparison || "+12% vs avg"}
                 icon={IndianRupee}
                 theme="amber"
