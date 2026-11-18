@@ -13,6 +13,8 @@ import {
   Select,
   MenuItem,
   Divider,
+  Avatar,
+  Chip,
 } from "@mui/material";
 import {
   BarChart,
@@ -64,6 +66,8 @@ export default function MDDashboard() {
     items: [],
     todaysTotal: 0,
   };
+  const pipeline = data.pipeline || [];
+  const advisorPerformance = data.advisorPerformance || [];
 
   const BAR_CHART_DATA = dailyThroughput.map((d) => ({
     name: d.day,
@@ -219,6 +223,87 @@ export default function MDDashboard() {
               />
             </Grid>
           </Grid>
+
+          {pipeline && pipeline.length > 0 && (
+            <Card
+              sx={{
+                borderRadius: 3,
+                border: "1px solid #D8E2F3",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.02)",
+                mb: 3,
+              }}
+            >
+              <Box sx={{ p: 2.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "#8A9AB5",
+                    fontWeight: 900,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Operational Pipeline (Overall Work & Waiting)
+                </Typography>
+                <Box
+                  sx={{
+                    borderTop: "1px solid #E2E8F0",
+                    mt: 1.5,
+                    pt: 2,
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    gap: { xs: 2, lg: 3 },
+                    pb: 0.5,
+                  }}
+                >
+                  {pipeline.map((stage) => (
+                    <Box
+                      key={stage.label}
+                      sx={{
+                        flex: 1,
+                        width: "100%",
+                        minHeight: 96,
+                        borderRadius: 2,
+                        border: "1px solid",
+                        borderColor: stage.color,
+                        bgcolor: stage.bg,
+                        p: 2,
+                        transition: "box-shadow 0.2s",
+                        "&:hover": {
+                          boxShadow: "0 10px 20px -15px rgba(15,23,42,0.5)",
+                        },
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          display: "block",
+                          color: stage.color,
+                          fontWeight: 900,
+                          textTransform: "uppercase",
+                          fontSize: 11,
+                        }}
+                      >
+                        {stage.label}
+                      </Typography>
+                      <Typography
+                        variant="h5"
+                        sx={{ color: stage.color, fontWeight: 900, my: 0.5 }}
+                      >
+                        {stage.value}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: "#64748B", fontSize: 11, fontWeight: 500 }}
+                      >
+                        {stage.meta}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            </Card>
+          )}
 
           {/* Middle Row */}
           <Grid container spacing={3} sx={{ mb: 3 }}>
@@ -691,6 +776,218 @@ export default function MDDashboard() {
               </Card>
             </Grid>
           </Grid>
+
+          {/* Advisor Performance Breakdown Section */}
+          <Card
+            sx={{
+              borderRadius: 3,
+              boxShadow: "0 2px 10px rgba(0,0,0,0.02)",
+              mt: 3,
+            }}
+          >
+            <CardContent sx={{ p: 3, pb: "16px !important" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 2,
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  fontWeight={800}
+                  color="text.secondary"
+                  sx={{
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  Advisor Performance Breakdown ({timeRange})
+                </Typography>
+                <Typography variant="caption" color="text.secondary" fontWeight={600}>
+                  {advisorPerformance.length} Advisors
+                </Typography>
+              </Box>
+
+              {advisorPerformance.length === 0 ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 120,
+                    width: "100%",
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                    No advisor activity found for this timeframe.
+                  </Typography>
+                </Box>
+              ) : (
+                <TableContainer sx={{ overflowX: "auto" }}>
+                  <Table size="small">
+                    <TableHead sx={{ bgcolor: "transparent" }}>
+                      <TableRow>
+                        <TableCell
+                          sx={{
+                            color: "#94A3B8",
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            py: 1.5,
+                            borderBottom: "1px solid #E2E8F0",
+                            bgcolor: "transparent",
+                          }}
+                        >
+                          ADVISOR
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            color: "#94A3B8",
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            py: 1.5,
+                            borderBottom: "1px solid #E2E8F0",
+                            bgcolor: "transparent",
+                          }}
+                        >
+                          TOTAL JOB CARDS
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            color: "#94A3B8",
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            py: 1.5,
+                            borderBottom: "1px solid #E2E8F0",
+                            bgcolor: "transparent",
+                          }}
+                        >
+                          IN PROGRESS
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            color: "#94A3B8",
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            py: 1.5,
+                            borderBottom: "1px solid #E2E8F0",
+                            bgcolor: "transparent",
+                          }}
+                        >
+                          WAITING / QUEUE
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            color: "#94A3B8",
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            py: 1.5,
+                            borderBottom: "1px solid #E2E8F0",
+                            bgcolor: "transparent",
+                          }}
+                        >
+                          COMPLETED
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          sx={{
+                            color: "#94A3B8",
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            py: 1.5,
+                            borderBottom: "1px solid #E2E8F0",
+                            bgcolor: "transparent",
+                          }}
+                        >
+                          EST. / BILLED REVENUE
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {advisorPerformance.map((advisor) => (
+                        <TableRow
+                          key={advisor.advisorId}
+                          hover
+                          sx={{ "&:last-child td": { borderBottom: 0 } }}
+                        >
+                          <TableCell sx={{ py: 1.5 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                              <Avatar
+                                sx={{
+                                  width: 32,
+                                  height: 32,
+                                  bgcolor: "#EEF2FF",
+                                  color: "#4F46E5",
+                                  fontSize: "0.8rem",
+                                  fontWeight: 700,
+                                }}
+                              >
+                                {advisor.advisorName.charAt(0).toUpperCase()}
+                              </Avatar>
+                              <Box>
+                                <Typography
+                                  variant="body2"
+                                  fontWeight={600}
+                                  color="#1E293B"
+                                >
+                                  {advisor.advisorName}
+                                </Typography>
+                                {advisor.employeeCode && advisor.employeeCode !== "-" && (
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                    sx={{ fontSize: "0.7rem" }}
+                                  >
+                                    {advisor.employeeCode}
+                                  </Typography>
+                                )}
+                              </Box>
+                            </Box>
+                          </TableCell>
+                          <TableCell align="center" sx={{ py: 1.5 }}>
+                            <Chip
+                              label={advisor.totalJobCards}
+                              size="small"
+                              sx={{
+                                fontWeight: 700,
+                                bgcolor: "#F1F5F9",
+                                color: "#334155",
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="center" sx={{ py: 1.5 }}>
+                            <Typography variant="body2" fontWeight={700} color="#2563EB">
+                              {advisor.inProgress}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="center" sx={{ py: 1.5 }}>
+                            <Typography variant="body2" fontWeight={700} color="#D97706">
+                              {advisor.waiting}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="center" sx={{ py: 1.5 }}>
+                            <Typography variant="body2" fontWeight={700} color="#059669">
+                              {advisor.completed}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right" sx={{ py: 1.5 }}>
+                            <Typography variant="body2" fontWeight={700} color="#1E293B">
+                              ₹{Number(advisor.totalRevenue || 0).toLocaleString("en-IN")}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </CardContent>
+          </Card>
         </>
       )}
     </Box>

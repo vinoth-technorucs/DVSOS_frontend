@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Box, Card, Typography, IconButton, Menu, MenuItem, Select, Chip, Tabs, Tab, useMediaQuery } from '@mui/material';
+import { Box, Card, Typography, IconButton, Menu, MenuItem, Select, Chip, Tabs, Tab, Avatar, useMediaQuery } from '@mui/material';
 import DataTable from '../../components/common/DataTable';
 import { Plus, Eye, Edit, MoreVertical, PlusCircle, MessageCircle, ArrowUp, ArrowDown } from 'lucide-react';
 import { useJobCards, useJobCardStatuses } from '../../queries/useDataQueries';
@@ -187,7 +187,43 @@ export default function JobCardList() {
         </Box>
       )
     },
+    {
+      header: 'Advisor',
+      render: (row) => {
+        const advisor = row.advisor || row.gateEntry?.assignedAdvisor || row.createdBy;
+        const advisorName = advisor?.fullName || row.advisorName || 'Unassigned';
+        const initial = advisorName !== 'Unassigned' ? advisorName.charAt(0).toUpperCase() : '?';
 
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Avatar
+              sx={{
+                width: 26,
+                height: 26,
+                bgcolor: advisorName !== 'Unassigned' ? '#e0e7ff' : '#f1f5f9',
+                color: advisorName !== 'Unassigned' ? '#4338ca' : '#64748b',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                border: '1px solid',
+                borderColor: advisorName !== 'Unassigned' ? '#c7d2fe' : '#cbd5e1'
+              }}
+            >
+              {initial}
+            </Avatar>
+            <Box>
+              <Typography variant="body2" fontWeight={600} sx={{ color: '#1e293b' }}>
+                {advisorName}
+              </Typography>
+              {advisor?.employeeCode && (
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontSize: '0.68rem', lineHeight: 1 }}>
+                  {advisor.employeeCode}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        );
+      }
+    },
     {
       header: 'Status',
       render: (row) => {
@@ -546,7 +582,7 @@ export default function JobCardList() {
       <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
         <Box sx={{ width: { xs: '100%', md: 350 } }}>
           <SearchBar
-            placeholder="Search vehicle, owner, job ID..."
+            placeholder="Search vehicle, owner, advisor, job ID..."
             value={search}
             onChange={(val) => { setSearch(val); setPage(0); }}
           />
